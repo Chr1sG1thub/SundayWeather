@@ -30,9 +30,14 @@
     </table>
 
     <script>
-        // Configure your location (e.g., Vinça, France)
-        const lat = 42.54;  // Latitude
-        const lon = 2.35;   // Longitude
+        // Configure your location (e.g., Bouleternère, France)
+        const lat = 42.656854;  // Latitude
+        const lon = 2.585727;   // Longitude
+
+    function degToCompass(deg) {
+    const dirs = ['⬇️', '↙️', '⬅️', '↖️', '⬆️', '↗️', '➡️', '↘️'];
+    return dirs[Math.round((deg + 22.5) / 45) % 8];
+    }
 
         async function fetchForecast() {
             const statusEl = document.getElementById('status');
@@ -56,6 +61,8 @@
                 const precip = data.hourly.precipitation;
                 const windSpeed = data.hourly.windspeed_10m;
                 const windDir = data.hourly.winddirection_10m;
+
+
                 
                 tbodyEl.innerHTML = '';
                 for (let i = 0, j = 0; j < 4 && i < times.length; i++) {
@@ -68,7 +75,7 @@
                             <td>${temps[i].toFixed(1)}</td>
                             <td>${precip[i].toFixed(1)}</td>
                             <td>${windSpeed[i].toFixed(1)}</td>
-                            <td>${windDir[i].toFixed(0)}°</td>
+                            <td>${windDir[i].toFixed(0)}° ${degToCompass(windDir[i])}</td>
                         `;
                     }
                 }

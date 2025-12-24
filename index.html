@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4-Hour Weather Forecast</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .loading { text-align: center; color: #666; }
+        .error { color: #d00; }
+    </style>
+</head>
+<body>
+    <h1>4-Hour Weather Forecast</h1>
+    <p id="status" class="loading">Loading forecast...</p>
+    <table id="forecast-table" style="display: none;">
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>Temperature (°C)</th>
+                <th>Precipitation (mm)</th>
+                <th>Wind Speed (km/h)</th>
+                <th>Wind Direction (°)</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        // Configure your location (e.g., Vinça, France)
+        const lat = 42.54;  // Latitude
+        const lon = 2.35;   // Longitude
+
+        async function fetchForecast() {
+            const statusEl = document.getElementById('status');
+            const tableEl = document.getElementById('forecast-table');
+            const tbodyEl = tableEl.querySelector('tbody');
+
+            try {
+                // Open-Meteo API: hourly data for temperature_2m, precipitation, windspeed_10m, winddirection_10m
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,precipitation,windspeed_10m,winddirection_10m&forecast_days=1&timezone=auto`;
+                
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('API request failed');
+                
+                const data = await response.json();
+                statusEl.textContent = `Forecast for ${data.latitude.toFixed(2)}°, ${data.longitude.toFixed(2)}°`;
+                
+                // Extract next 4 hours (starting from current hour)
+                const now = new Date();
+                const times = data.hourly.time;
+                const temps = data.hourly.temperature_2m;
+                const precip = data.hourly.precipitation;
+                const windSpeed = data.hourly.windspeed_10m;
+                const windDir = data.hourly.winddirection_10m;
+                
+                tbodyEl.innerHTML = '';
+                for (let i = 0; i < 4 && i < times.length; i++) {
+                    const time = new Date(times[i]);
+                    if (time > now) {  // Only future hours
+                        const row = tbodyEl.insertRow();
+                        row.innerHTML = `
+                            <td>${time.toLocaleString()}</td>
+                            <td>${temps[i].toFixed(1)}</td>
+                            <td>${precip[i].toFixed(1)}</td>
+                            <td>${windSpeed[i].toFixed(1)}</td>
+                            <td>${windDir[i].toFixed(0)}°</td>
+                        `;
+                    }
+                }
+                
+                tableEl.style.display = 'table';
+                statusEl.style.display = 'none';
+            } catch (error) {
+                statusEl.textContent = `Error: ${error.message}`;
+                statusEl.className = 'error';
+            }
+        }
+
+        // Load on page load
+        fetchForecast();
+        
+        // Optional: Refresh every 30 minutes
+        setInterval(fetchForecast, 30 * 60 * 1000);
+    </script>
+</body>
+</html>

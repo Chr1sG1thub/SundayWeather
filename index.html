@@ -65,16 +65,16 @@
 
                 
                 tbodyEl.innerHTML = '';
-                for (let i = 0, j = 0; j < 4 && i < times.length; i++) {
+                for (let i = 0, j = 0; j < 6 && i < times.length; i++) {
                     const time = new Date(times[i]);
                     if (time >= sundayMorning) {  // Only future hours
                         j = j + 1;
                         const row = tbodyEl.insertRow();
                         row.innerHTML = `
                             <td>${time.toLocaleString()}</td>
-                            <td>${temps[i].toFixed(1)}</td>
-                            <td>${precip[i].toFixed(1)}</td>
-                            <td>${windSpeed[i].toFixed(1)}</td>
+                            <td>${temps[i].toFixed(0)}</td>
+                            <td>${precip[i].toFixed(0)}</td>
+                            <td>${windSpeed[i].toFixed(0)}</td>
                             <td>${windDir[i].toFixed(0)}° ${degToCompass(windDir[i])}</td>
                         `;
                     }

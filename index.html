@@ -58,9 +58,10 @@
                 const windDir = data.hourly.winddirection_10m;
                 
                 tbodyEl.innerHTML = '';
-                for (let i = 0; i < 4 && i < times.length; i++) {
+                for (let i = 0, j = 0; j < 4 && i < times.length; i++) {
                     const time = new Date(times[i]);
                     if (time > now) {  // Only future hours
+                        j = j + 1;
                         const row = tbodyEl.insertRow();
                         row.innerHTML = `
                             <td>${time.toLocaleString()}</td>

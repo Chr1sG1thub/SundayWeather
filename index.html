@@ -41,7 +41,7 @@
 
             try {
                 // Open-Meteo API: hourly data for temperature_2m, precipitation, windspeed_10m, winddirection_10m
-                const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,precipitation,windspeed_10m,winddirection_10m&forecast_days=1&timezone=auto`;
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,precipitation,windspeed_10m,winddirection_10m&forecast_days=7&timezone=auto`;
                 
                 const response = await fetch(url);
                 if (!response.ok) throw new Error('API request failed');
@@ -50,7 +50,7 @@
                 statusEl.textContent = `Forecast for ${data.latitude.toFixed(2)}°, ${data.longitude.toFixed(2)}°`;
                 
                 // Extract next 4 hours (starting from current hour)
-                const now = new Date();
+                const sundayMorning = new Date("December 28, 2025 07:00:00");
                 const times = data.hourly.time;
                 const temps = data.hourly.temperature_2m;
                 const precip = data.hourly.precipitation;
@@ -60,7 +60,7 @@
                 tbodyEl.innerHTML = '';
                 for (let i = 0, j = 0; j < 4 && i < times.length; i++) {
                     const time = new Date(times[i]);
-                    if (time > now) {  // Only future hours
+                    if (time >= sundayMorning) {  // Only future hours
                         j = j + 1;
                         const row = tbodyEl.insertRow();
                         row.innerHTML = `

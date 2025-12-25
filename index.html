@@ -14,7 +14,7 @@
     </style>
 </head>
 <body>
-    <h1>4-Hour Weather Forecast</h1>
+    <h1>6-Hour Weather Forecast</h1>
     <p id="status" class="loading">Loading forecast...</p>
     <table id="forecast-table" style="display: none;">
         <thead>
@@ -69,12 +69,13 @@
                     const time = new Date(times[i]);
                     if (time >= sundayMorning) {  // Only future hours
                         j = j + 1;
+                        const hour = time.getHours().toString().padStart(2, '0') + 'h';
                         const row = tbodyEl.insertRow();
                         row.innerHTML = `
-                            <td>${time.toLocaleString()}</td>
-                            <td>${temps[i].toFixed(0)}</td>
-                            <td>${precip[i].toFixed(0)}</td>
-                            <td>${windSpeed[i].toFixed(0)} ${degToCompass(windDir[i])}</td>
+                            <td style="text-align: right">${hour}</td>
+                            <td style="text-align: right">${temps[i].toFixed(0)}</td>
+                            <td style="text-align: right">${precip[i].toFixed(0)}</td>
+                            <td style="text-align: right">${windSpeed[i].toFixed(0)} ${degToCompass(windDir[i])}</td>
                         `;
                     }
                 }

@@ -62,8 +62,6 @@
                 const windSpeed = data.hourly.windspeed_10m;
                 const windDir = data.hourly.winddirection_10m;
 
-
-                
                 tbodyEl.innerHTML = '';
                 for (let i = 0, j = 0; j < 6 && i < times.length; i++) {
                     const time = new Date(times[i]);
